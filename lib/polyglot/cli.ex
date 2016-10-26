@@ -4,9 +4,11 @@ defmodule Polyglot.CLI do
   @option_parser_opts [
     strict: [
       help: :boolean,
+      token: :string,
     ],
     aliases: [
       h: :help,
+      t: :token,
     ]
   ]
 
@@ -27,7 +29,11 @@ defmodule Polyglot.CLI do
     """
   end
 
-  def process({_, [username], _}) do
-    Runner.run(username)
+  def process({flags, [username], _}) do
+    config = %{
+      token: Keyword.get(flags, :token, ""),
+    }
+
+    Runner.run(username, config)
   end
 end

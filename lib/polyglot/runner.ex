@@ -3,25 +3,27 @@ defmodule Polyglot.Runner do
 
   @per_page 100
 
-  def run(username) do
-    get_repos(username)
+  def run(username, config) do
+    get_repos(username, config.token)
     |> decode
-    |> repo_languages(username)
+    |> repo_languages(username, config.token)
     |> count_languages_bytes
     |> output
   end
 
-  def get_repos(username) do
-    get_repos(username, 1, [])
+  def get_repos(username, token) do
+    get_repos(username, token, 1, [])
   end
 
-  defp get_repos(username, page, acc) do
-    %{body: body, headers: headers} = HTTPoison.get!(repos_endpoint(username, page))
+  defp get_repos(username, token,  page, acc) do
+    %{body: body, headers: headers} =
+      HTTPoison.get!(repos_endpoint(username, page), %{
+                     "authorization" => "token #{token}"})
 
     next = [body | acc]
 
     if contain_next_page?(headers) do
-      get_repos(username, page + 1, next)
+      get_repos(username, token, page + 1, next)
     else
       next
     end
@@ -34,9 +36,12 @@ defmodule Polyglot.Runner do
     |> Enum.map(fn %{"name" => name} -> name end)
   end
 
-  def repo_languages(repos, username) do
+  def repo_languages(repos, username, token) do
     repos
-    |> Stream.map(fn repo -> HTTPoison.get!(languages_endpoint(username, repo), %{}) end)
+    |> Stream.map(fn repo ->
+      HTTPoison.get!(languages_endpoint(username, repo), %{
+                   "authorization" => "token #{token}"})
+    end)
     |> Stream.map(fn %{body: body} -> body end)
     |> Enum.map(fn repo -> Poison.decode!(repo) end)
   end
