@@ -2,8 +2,6 @@ defmodule Polyglot.Runner do
   alias Polyglot.Template
   alias Polyglot.Repos
 
-  @per_page 100
-
   def run(username, config) do
     get_repos(username, config.token)
     |> decode
@@ -13,7 +11,12 @@ defmodule Polyglot.Runner do
   end
 
   def get_repos(username, token) do
-    Repos.get_all(username, token)
+    case Repos.get_all(username, token) do
+      {:ok, repos} -> repos
+      {:error, :not_found} ->
+        IO.puts "Username/organization #{username} not found"
+        exit(:normal)
+    end
   end
 
   def decode(repos) do
