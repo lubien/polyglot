@@ -48,7 +48,7 @@ defmodule Polyglot.Template do
 
   def terminal_width do
     case :io.columns do
-      {:ok, count} -> IO.inspect {"count", count}; count
+      {:ok, count} -> count
       _ -> 80
     end
   end
