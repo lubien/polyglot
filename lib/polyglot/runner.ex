@@ -21,9 +21,7 @@ defmodule Polyglot.Runner do
 
   def decode(repos) do
     repos
-    |> Enum.map(fn repo -> Poison.decode!(repo) end)
-    |> List.flatten
-    |> Enum.map(fn %{"name" => name} -> name end)
+    |> Enum.map(&Map.get(&1, "name"))
   end
 
   def get_languages(repos, username, token) do

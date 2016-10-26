@@ -10,7 +10,7 @@ defmodule Polyglot.Repos do
       {:error, _} = response -> response
 
       %{body: body, headers: headers} ->
-        next = [body | acc]
+        next = Enum.concat(body |> Poison.decode!, acc)
 
         if contain_next_page?(headers) do
           get_all(username, token, page + 1, next)
