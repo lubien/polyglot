@@ -5,8 +5,8 @@ defmodule Polyglot.Runner do
   def run(username, config) do
     get_repos(username, config.token)
     |> decode
-    |> repo_languages(username, config.token)
-    |> count_languages_bytes
+    |> get_languages(username, config.token)
+    |> merge_languages
     |> output
   end
 
@@ -26,19 +26,13 @@ defmodule Polyglot.Runner do
     |> Enum.map(fn %{"name" => name} -> name end)
   end
 
-  def repo_languages(repos, username, token) do
+  def get_languages(repos, username, token) do
     Repos.languages(repos, username, token)
   end
 
-  def count_languages_bytes(repos) do
+  def merge_languages(repos) do
     repos
-    |> Enum.reduce(%{}, fn repo, acc ->
-      repo
-      |> Map.keys
-      |> Enum.reduce(acc, fn key, map ->
-        Map.update(map, key, repo[key], fn value -> value + repo[key] end)
-      end)
-    end)
+    |> Enum.reduce(%{}, &Map.merge/2)
   end
 
   def output(languages) do

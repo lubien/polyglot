@@ -15,7 +15,7 @@ defmodule Polyglot.Repos do
         if contain_next_page?(headers) do
           get_all(username, token, page + 1, next)
         else
-          next
+          {:ok, next}
         end
     end
   end
@@ -28,7 +28,7 @@ defmodule Polyglot.Repos do
   end
 
   defp handle_response({:ok, %{status_code: 404}}), do: {:error, :not_found}
-  defp handle_response({foo, response}), do: response
+  defp handle_response({_, response}), do: response
 
   defp get(url, token) do
     HTTPoison.get(url, %{"authorization" => "token #{token}"})
