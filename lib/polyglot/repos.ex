@@ -30,11 +30,16 @@ defmodule Polyglot.Repos do
   defp handle_response({:ok, %{status_code: 404}}), do: {:error, :not_found}
   defp handle_response({_, response}), do: response
 
+  defp get(url, "") do
+    HTTPoison.get(url)
+    |> handle_response
+  end
   defp get(url, token) do
     HTTPoison.get(url, %{"authorization" => "token #{token}"})
     |> handle_response
   end
 
+  defp get!(url, ""), do: HTTPoison.get!(url)
   defp get!(url, token) do
     HTTPoison.get!(url, %{"authorization" => "token #{token}"})
   end
