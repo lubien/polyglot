@@ -1,24 +1,33 @@
 # Polyglot
 
-**TODO: Add description**
+> Know how much of what languages you've been writting on GitHub
 
-## Installation
+## Build
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+```
+mix deps.get
+mix #=> aliased mix.escript_build
+```
 
-  1. Add `polyglot` to your list of dependencies in `mix.exs`:
+## Usage
 
-    ```elixir
-    def deps do
-      [{:polyglot, "~> 0.1.0"}]
-    end
-    ```
+```
+Usage: polyglot username [--help]
 
-  2. Ensure `polyglot` is started before your application:
+  -t, --token   GitHub personal access token.
 
-    ```elixir
-    def application do
-      [applications: [:polyglot]]
-    end
-    ```
+                GitHub limits to 60 requests in a small
+                amount of time. Use a token to have a
+                limit of 1000 requests.
 
+  --forks       Count forks too
+```
+
+## TODO
+
+- Tests
+- Travis CI
+
+## License
+
+[MIT](LICENSE.md)
