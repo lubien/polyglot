@@ -5,7 +5,7 @@ defmodule Polyglot.CLI do
     strict: [
       help: :boolean,
       token: :string,
-      forks?: :boolean,
+      forks: :boolean,
     ],
     aliases: [
       h: :help,
@@ -33,7 +33,7 @@ defmodule Polyglot.CLI do
   def process({flags, [username], _}) do
     config = %{
       token: Keyword.get(flags, :token, ""),
-      forks?: Keyword.get(flags, :forks?, false),
+      forks?: Keyword.get(flags, :forks, false),
     }
 
     Runner.run(username, config)
