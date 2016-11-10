@@ -4,6 +4,7 @@ defmodule Polyglot.Runner do
 
   def run(username, config) do
     get_repos(username, config.token)
+    |> ignore_forks?(config.forks?)
     |> decode
     |> get_languages(username, config.token)
     |> merge_languages
@@ -17,6 +18,12 @@ defmodule Polyglot.Runner do
         IO.puts "Username/organization #{username} not found"
         exit(:normal)
     end
+  end
+
+  def ignore_forks?(repos, true), do: repos
+  def ignore_forks?(repos, false) do
+    repos
+    |> Enum.filter(fn repo -> not Map.get(repo, "fork", false) end)
   end
 
   def decode(repos) do
